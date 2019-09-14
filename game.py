@@ -1,7 +1,7 @@
 import cv2
 import time
 import numpy as np
-from keras import models
+from keras.models import load_model
 
 
 def draw_label(frame, text, pos, font_scale, text_color):
@@ -18,14 +18,14 @@ def draw_label(frame, text, pos, font_scale, text_color):
 
 class NarutoGame(object):
     def __init__(self):
-        # Using OpenCV to capture from device 0 and read the first frame
         self.video = cv2.VideoCapture(0)
 
-        # Load Keras model for hand sign classification
-        self.model = models.load_model("data/custom_sign_model_v2.h5")
+        self.model = load_model("data/custom_sign_model_v2.h5")
         self.class_names = ["bird", "boar", "dog", "dragon", "hare", "horse", "monkey", "ox", "ram", "rat", "serpant", "tiger", "none"]
-        self.jutsus = {"11,0": "shuriken jutsu",
-                       "5,10": "fire ball jutsu"}
+        self.jutsus = {"11,0": "Shuriken Jutsu",
+                       "5,10": "Fire Ball Jutsu",
+                       "6,3,9": "Chidori",
+                       "2,10,3": "Lightning Dragon Jutsu"}
 
         self.prev_sign = 12
         self.sign_count = 0
@@ -43,12 +43,13 @@ class NarutoGame(object):
         self.video.release()
 
     def get_frame(self):
+        # print("getting frame")
         ret, frame = self.video.read()
-        frame = cv2.flip(frame, 1)
-        height, width = frame.shape[:2]
         font = cv2.FONT_HERSHEY_SIMPLEX
 
         if ret:
+            frame = cv2.flip(frame, 1)
+            height, width = frame.shape[:2]
             # Show player roi region
             x, y, w, h = (width//2-width//8, height//3, width//4, width//4)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 255, 0), 2)
