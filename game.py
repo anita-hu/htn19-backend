@@ -22,7 +22,9 @@ class NarutoGame(object):
 
         self.model = load_model("data/custom_sign_model_v2.h5")
         self.class_names = ["bird", "boar", "dog", "dragon", "hare", "horse", "monkey", "ox", "ram", "rat", "serpant", "tiger", "none"]
-        self.jutsus = {"11,0": "Shuriken Jutsu",
+        self.jutsus = {"0": "bird",
+                       "1": "boar",
+                       "11,0": "Shuriken Jutsu",
                        "5,10": "Fire Ball Jutsu",
                        "6,3,9": "Chidori",
                        "2,10,3": "Lightning Dragon Jutsu"}
@@ -43,7 +45,6 @@ class NarutoGame(object):
         self.video.release()
 
     def get_frame(self):
-        # print("getting frame")
         ret, frame = self.video.read()
         font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -69,12 +70,18 @@ class NarutoGame(object):
                 cv2.putText(frame, "Player switch!!",(x, int(height*0.9)), font, 1.5,(255,255,0), 2)
                 # 10s count down
                 time_elapse = int(time.time() - self.time_start)
-                cv2.putText(frame, f"{10 - time_elapse}",(width//2, 60), font, 2,(0,0,255), 2)
+                cv2.putText(frame, f"{5 - time_elapse}",(width//2, 60), font, 2,(0,0,255), 2)
 
-                if time_elapse >= 10:
+                if time_elapse >= 5:
                     self.game_round += 1
                     self.player_switch = False
                     self.time_start = time.time()
+                    self.player_stats[0]['attack'] = -1
+                    self.player_stats[1]['attack'] = -1
+                    self.curr_combo = []
+                    self.sign_count = 0
+                    self.prev_sign = 12
+                    self.clear_count = 0
 
             else:
                 roi = frame[y:y+w, x:x+w]
@@ -89,9 +96,11 @@ class NarutoGame(object):
 
                 # 20s count down
                 time_elapse = int(time.time() - self.time_start)
-                cv2.putText(frame, f"{20 - time_elapse}",(width//2, 60), font, 2,(0,0,255), 2)
+                cv2.putText(frame, f"{5 - time_elapse}",(width//2, 60), font, 2,(0,0,255), 2)
 
-                if time_elapse >= 20:
+                if time_elapse >= 5: 
+                    # hack
+                    self.player_stats[self.curr_player-1]['attack'] = 1
                     if self.curr_player == 1:
                         self.curr_player = 2
                     else:
@@ -119,6 +128,7 @@ class NarutoGame(object):
                     if jutsu in self.jutsus.keys():
                         print(f"{self.jutsus[jutsu]}!!")
                         cv2.putText(frame, f"{self.jutsus[jutsu]}!!",(frame.shape[1]//3, int(frame.shape[0]*0.9)), font, 1.5,(255,255,0), 2)
+                        self.player_stats[self.curr_player-1]['attack'] = 1
                         # Update stats
                         self.player_stats[self.curr_player-1]["chakra"] -= len(self.curr_combo)*10
                         if self.curr_player == 1:

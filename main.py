@@ -11,7 +11,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
-message_to_send = "init"
+message_to_send = "[]"
+prev_message = "[]"
 
 @app.route('/')
 def index():
@@ -27,26 +28,43 @@ def gen(game):
 
 @app.route('/video_feed')
 def video_feed():
-  return Response(gen(NarutoGame()),
+   print("video feed")
+   return Response(gen(NarutoGame()),
                   mimetype='multipart/x-mixed-replace; boundary=frame')
-                  
+
 @app.route("/stream")
 def stream():
   def event_stream():
-      print("Accessed")
+      global prev_message
+      print("text stream")
       while True:
           if message_to_send:
               sleep(1)
-              print("Sent player stats")
-              yield "data:{}\n\n".format(message_to_send)
+              if message_to_send != prev_message:
+                  print("Sent player stats")
+                  yield "data:{}\n\n".format(message_to_send)
+              prev_message = message_to_send
   return Response(event_stream(), mimetype="text/event-stream")
 
+# @app.route('/test',methods = ['POST', 'GET'])
+# def login():
+#   if request.method == 'POST':
+#      print('post worked')
+#      print(request.form)
+#      return '''something'''
+#   elif request.method == 'GET':
+#      print('get worked')
+#      return '''something'''
+#   else:
+#      print('nothing works ')
+#      return '''something'''
+
 if __name__ == '__main__':
-   app.run(debug=True, processes=2, threaded=False)
+   app.run(debug=True)
 
    try:
        while True:
-          time.sleep(1)
+          sleep(1)
 
    except KeyboardInterrupt:
       print("exiting")
