@@ -13,10 +13,9 @@ CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
 message_to_send = "[]"
 prev_message = "[]"
+use_voice = False
 
-
-meta = {"start": False, "sign": 0, "end": False, "restart": False}
-
+meta = {"start": True, "sign": 0, "end": False, "restart": False}
 
 @app.route('/')
 def index():
@@ -35,7 +34,7 @@ def gen(game):
 @app.route('/video_feed')
 def video_feed():
     print("video feed")
-    return Response(gen(NarutoGame()),
+    return Response(gen(NarutoGame(voice=use_voice)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
