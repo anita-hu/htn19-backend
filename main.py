@@ -14,7 +14,8 @@ app.config['SECRET_KEY'] = 'secret!'
 message_to_send = "[]"
 prev_message = "[]"
 
-game_start = False
+
+meta = {"start": False, "sign": 0}
 
 
 @app.route('/')
@@ -53,10 +54,27 @@ def stream():
     return Response(event_stream(), mimetype="text/event-stream")
 
 
+@app.route("/meta")
+def meta_route():
+    def event_stream():
+        print("meta stream")
+        while True:
+            if meta:
+                sleep(1)
+                yield "data:{}\n\n".format(json.dumps(meta))
+    return Response(event_stream(), mimetype="text/event-stream")
+
+
 @app.route('/voice', methods=['POST', 'GET'])
 def login():
+    global meta
     if request.method == 'POST':
-        choice = request.form["var1"]
+        print(request.form)
+        choice = int(request.form["var1"])
+        if choice == 0:
+            meta['start'] = True
+        elif choice >= 1 and choice <= 5:
+            meta['sign'] = choice
         return '''something'''
     elif request.method == 'GET':
         return '''something'''
