@@ -15,7 +15,7 @@ message_to_send = "[]"
 prev_message = "[]"
 
 
-meta = {"start": False, "sign": 0}
+meta = {"start": False, "sign": 0, "end": False}
 
 
 @app.route('/')
@@ -75,6 +75,8 @@ def login():
             meta['start'] = True
         elif choice >= 1 and choice <= 5:
             meta['sign'] = choice
+        elif choice == 7:
+            meta['end'] = True
         return '''something'''
     elif request.method == 'GET':
         return '''something'''
