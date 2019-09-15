@@ -22,7 +22,7 @@ class NarutoGame(object):
         self.video = cv2.VideoCapture(0)
 
         # Load Keras model for hand sign classification
-        self.model = models.load_model("data/custom_sign_model_v2.h5")
+        self.model = models.load_model("../data/custom_sign_model_v3.h5")
         self.class_names = ["bird", "boar", "dog", "dragon", "hare", "horse", "monkey", "ox", "ram", "rat", "serpant", "tiger", "none"]
         self.jutsus = {"11,0": "shuriken jutsu",
                        "5,10": "fire ball jutsu"}

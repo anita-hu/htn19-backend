@@ -15,7 +15,7 @@ message_to_send = "[]"
 prev_message = "[]"
 
 
-meta = {"start": False, "sign": 0}
+meta = {"start": True, "sign": 0, "end": False, "restart": False}
 
 
 @app.route('/')
@@ -26,7 +26,7 @@ def index():
 def gen(game):
     global message_to_send
     while True:
-        frame = game.get_frame()
+        frame = game.get_frame(meta)
         message_to_send = json.dumps(game.player_stats)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
@@ -75,9 +75,9 @@ def login():
             meta['start'] = True
         elif choice >= 1 and choice <= 5:
             meta['sign'] = choice
-        return '''something'''
+        return '''received'''
     elif request.method == 'GET':
-        return '''something'''
+        return '''received'''
 
 
 if __name__ == '__main__':
