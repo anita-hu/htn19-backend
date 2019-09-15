@@ -75,9 +75,11 @@ def login():
             meta['start'] = True
         elif choice >= 1 and choice <= 5:
             meta['sign'] = choice
-        return '''received'''
+        elif choice == 7:
+            meta['end'] = True
+        return '''voice received'''
     elif request.method == 'GET':
-        return '''received'''
+        return '''something'''
 
 
 if __name__ == '__main__':
