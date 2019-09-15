@@ -15,7 +15,7 @@ message_to_send = "[]"
 prev_message = "[]"
 
 
-meta = {"start": True, "sign": 0, "end": False, "restart": False}
+meta = {"start": False, "sign": 0, "end": False, "restart": False}
 
 
 @app.route('/')
